@@ -9,8 +9,7 @@ export default class Product extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            error: null,
-            isLoaded: false,
+           
 
            product: []
         };
@@ -19,39 +18,27 @@ export default class Product extends Component {
     }
 
     componentDidMount() {
-        this.handleProductEvent(1);
+        this.handleProductEvent();
     }
 
 
-    handleProductEvent = (page) => {
-        fetch("http://localhost:61419/Products/GetProduct/?page=" + page)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        product: result
-                    });
-                },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
+    handleProductEvent = () => {
+        $.ajax({
+            url: "http://localhost:61419/Products/GetProduct",
+            type: "POST",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(),
+            success: function (data) {
+                this.setState({ product: data })
+            }.bind(this)
+        });
     }
 
     render() {
-        const { error, isLoaded, product } = this.state;
-        if (error) {
-            return <div>Error: {error.message}</div>;
-        } else if (!isLoaded) {
-            return <div>Loading...</div>;
-        } else {
+        const product = this.state.product;
+
+      
 
             return (
 
@@ -73,7 +60,7 @@ export default class Product extends Component {
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {product.items.map(product => (
+                            {product.map(product => (
                                 <Table.Row key={product.id}>
 
                                     <Table.Cell>{product.name}</Table.Cell>
@@ -99,28 +86,12 @@ export default class Product extends Component {
                         </Table.Body>
 
                     </Table>
-                    <Table.Footer>
-                        <Table.Row>
-                            <Table.HeaderCell colSpan='4'></Table.HeaderCell>
-
-                            <Button icon="arrow left"
-
-                                onClick={() => this.handleProductEvent(this.state.product.metaData.pageNumber - 1)}
-                                disabled={!product.metaData.hasPreviousPage} />
-
-
-                            <Button icon="arrow right"
-
-                                onClick={() => this.handleProductEvent(this.state.product.metaData.pageNumber + 1)}
-                                disabled={!product.metaData.hasNextPage} />
-                        </Table.Row>
-
-                    </Table.Footer>
+                   
 
                 </div>
 
             );
 
-        }
+        
     }
 }

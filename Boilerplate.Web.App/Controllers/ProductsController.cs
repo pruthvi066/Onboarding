@@ -18,47 +18,17 @@ namespace Boilerplate.Web.App.Controllers
         {
             _context = context;
         }
-        public JsonResult GetProduct(int page)
+
+        //index
+        public JsonResult GetProduct()
         {
-            var paged = _context.Product.ToList().ToPagedList(page, 10);
-            var pagedWithMetaData = new { items = paged, metaData = paged.GetMetaData() };
-            return Json(pagedWithMetaData);
+            var paged = _context.Product.ToList();
+           
+            return Json(paged);
         }
 
-        // GET: Products
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Product.ToListAsync());
-        }
-
-        // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Product
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        // GET: Products/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Products/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-       
+     
+       //get
         [HttpPost]
         public JsonResult Create([FromBody] Product Product)
 
@@ -68,141 +38,58 @@ namespace Boilerplate.Web.App.Controllers
             {
                 _context.Add(Product);
                 _context.SaveChanges();
-                // return RedirectToAction(nameof(Index));
+               
 
             }
             return Json(Product);
 
         }
 
+        //edit
         [HttpPut]
         public JsonResult EditProduct([FromBody]Product Product)
         {
-            if (!ProductExists(Product.Id))
-            {
-                return Json("Product Id Not Found");
-            }
+            var p = _context.Product.Where(x => x.Id == Product.Id).SingleOrDefault();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    //_context.Update(customer.Name);
-                    _context.Update(Product);
-                    _context.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(Product.Id))
-                    {
-                        return Json("Product  not exist");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                // return RedirectToAction(nameof(Index));
-            }
+
+
+            p.Name = Product.Name;
+            p.Price = Product.Price;
+            _context.SaveChanges();
             return Json(Product);
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Product.Any(e => e.Id == id);
-        }
-
-        // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Product.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return View(product);
-        }
-
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price")] Product product)
-        {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(product);
-        }
-
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Product
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        // POST: Products/Delete/5
-        [HttpPost]
-
-        public JsonResult DeleteProduct(int id, [FromBody]Product Product)
-        {
-            if (!ProductExists(Product.Id))
-            {
-                return Json("Product  Not Found");
-            }
-
-            if (ModelState.IsValid)
-            {
-                _context.Product.Remove(Product);
-                _context.SaveChanges();
-
-
-                return new JsonResult("Product Deleted Successfully!");
-
-            }
-            return new JsonResult(Product);
-        }
-
        
+
+      
+         
+
+      
+            
+
+      
+
+       //delete
+        [HttpPost]
+
+        public JsonResult DeleteProduct([FromBody]Product Product)
+        {
+            var product = _context.Product.Find(Product.Id);
+            _context.Entry(product).Collection(c => c.Sale).Load();
+            if (product.Sale.Count > 0)
+            {
+                foreach (var sales in product.Sale)
+                {
+                    _context.Sale.Remove(sales);
+                }
+            }
+            _context.Product.Remove(product);
+            _context.SaveChanges();
+
+            return Json("Product Removed Successfully");
+
+        }
+
+
     }
 }

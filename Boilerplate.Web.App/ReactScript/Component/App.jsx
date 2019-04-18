@@ -5,7 +5,7 @@ import 'semantic-ui-css/semantic.min.css';
 import Customer from './customer.jsx';
 import { Table, Modal, Button, Checkbox, Form, Header, Menu, Image, Container } from 'semantic-ui-react';
 import NavBar from './NavBar.jsx';
-import Product from './product.jsx';
+import Product from './Product.jsx';
 import Store from './store.jsx';
 import Sale from './sale.jsx';
 
@@ -25,7 +25,7 @@ export default class App extends Component {
                     <Route exact path="/" component={Customer} />
                     <Route exact path="/customer" component={Customer} />
                     <Route exact path="/product" component={Product} />
-                    <Route exact path="/sales" component={Customer} />
+                    <Route exact path="/sales" component={Sale} />
                     <Route exact path="/store" component={Store} />
 
                 </div>

@@ -17,14 +17,10 @@ export default class CreateProduct extends Component {
             price: '',
 
 
-            nameError: false,
-
-            priceError: false,
-            formError: false,
-            errorMessage: 'Please complete all required fields.',
+          
             complete: false,
             modalOpen: false,
-            redirectToReferrer: false
+            
         };
         //this.props.createCustomer(customer);
 
@@ -48,62 +44,35 @@ export default class CreateProduct extends Component {
 
 
     handleSubmit = () => this.setState({ modalOpen: false })
-    handleClose = () => this.setState({ modalOpen: false, complete: false }, () => this.props.loadfun(1))
+    handleClose = () => this.setState({ modalOpen: false, complete: false }, () => this.props.loadfun())
     handleOpen = () => this.setState({ modalOpen: true })
 
 
     createProductForm() {
 
-        this.setState({
-            redirectToReferrer: true
-        })
-        let error = false;
-
-        if (this.state.name === '') {
-            this.setState({ nameError: true })
-            error = true
-
-        } else {
-            this.setState({ nameError: false })
-            error = false
-        }
-        if (this.state.price === '') {
-            this.setState({ priceError: true })
-            error = true
-
-        } else {
-            this.setState({ priceError: false })
-            error = false
-        }
-
-        if (error) {
-            this.setState({ formError: true })
-            return
-        } else {
-            this.setState({ formError: false })
-        }
+     
+    
 
         let productdata = {
             Name: this.state.name,
-            Price: this.state.price,
+            Price: this.state.price
 
 
 
         }
 
 
-        fetch("http://localhost:61419/Products/Create", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                'Content-Type': "application/json",
-
-            },
-            body: JSON.stringify(productdata)
-        }).then(res => res.json())
-            .then(function (body) {
-                console.log(body)
-            }).then(() => { this.successCallback(); })
+        $.ajax({
+            url: "http://localhost:61419/Products/Create",
+            type: "POST",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(productdata),
+            success: function (data) {
+                this.setState({ productdata: data })
+                window.location.reload()
+            }.bind(this)
+        });
 
 
 
@@ -138,14 +107,14 @@ export default class CreateProduct extends Component {
                     <Modal.Content>
                         {!this.state.complete ?
                             <Modal.Description>
-                                <Form error={this.state.formError}>
+                                <Form >
 
                                     <Form.Field>
-                                        <Form.Input required={true} onChange={(e) => this.setState({ name: e.target.value })} label='Name' placeholder="Enter Name..." error={this.state.nameError} />
+                                        <Form.Input required={true} onChange={(e) => this.setState({ name: e.target.value })} label='Name' placeholder="Enter Name..."  />
                                     </Form.Field>
 
                                     <Form.Field>
-                                        <Form.Input required={true} onChange={(e) => this.setState({ price: e.target.value })} label='Price' placeholder="Enter Price..." error={this.state.priceError} />
+                                        <Form.Input required={true} onChange={(e) => this.setState({ price: e.target.value })} label='Price' placeholder="Enter Price..."  />
                                     </Form.Field>
 
                                 </Form>
@@ -162,7 +131,7 @@ export default class CreateProduct extends Component {
 
                     {!this.state.complete ?
                         <Modal.Actions>
-                            <Button color='black' onClick={this.handleClose}>Close</Button>
+                            <Button color='black' onClick={this.handleClose}>Cancel</Button>
 
                             <Button positive icon='checkmark' labelPosition='right' type="submit" content="Create"
                                 onClick={this.createProductForm} onSubmit={this.formsuccess}>

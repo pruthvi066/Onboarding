@@ -43,54 +43,27 @@ export default class DeleteStore extends Component {
 
     deletestoreForm() {
 
-        let error = false;
-
-        if (this.state.name === '') {
-            this.setState({ nameError: true })
-            error = true
-        } else {
-            this.setState({ nameError: false })
-            error = false
-        }
-        if (this.state.address === '') {
-            this.setState({ addressError: true })
-            error = true
-        } else {
-            this.setState({ addressError: false })
-            error = false
-        }
-
-        if (error) {
-            this.setState({ formError: true })
-            return
-        } else {
-            this.setState({ formError: false })
-        }
 
         let data = {
             Name: this.state.name,
             Address: this.state.address,
             Id: this.state.id,
 
-            //this.props.createCustomer(customer),
-            //this.props.showLoading(),
+         
         }
 
 
-        fetch("http://localhost:61419/Stores/DeleteStore", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-
-
-
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify(data)
-        }).then(res => res.json())
-            .then(function (body) {
-                console.log(body)
-            }).then(() => { this.successCallback(); })
+        $.ajax({
+            url: "http://localhost:61419/Stores/DeleteStore",
+            type: "POST",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                this.setState({ data: data })
+                window.location.reload()
+            }.bind(this)
+        });
 
     }
 
@@ -124,11 +97,14 @@ export default class DeleteStore extends Component {
 
                 {!this.state.complete ?
                     <Modal.Actions>
-                        <Button color='black' onClick={this.handleClose}>cancle</Button>
+                        <Button color='black' onClick={this.handleClose}>cancel</Button>
 
-                        <Button color='red' onClick={this.deletestoreForm} >
+                        <Button color='red'
+                            icon="close"
+                            labelPosition="right"
+                            onClick={this.deletestoreForm} >Delete
                             <Icon name='close' />
-                            Delete</Button>
+                            </Button>
 
                     </Modal.Actions>
                     : null}

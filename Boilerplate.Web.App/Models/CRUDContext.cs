@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -6,6 +7,8 @@ namespace Boilerplate.Web.App.Models
 {
     public partial class CRUDContext : DbContext
     {
+        internal object sale;
+
         public CRUDContext()
         {
         }
@@ -19,12 +22,14 @@ namespace Boilerplate.Web.App.Models
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Sale> Sale { get; set; }
         public virtual DbSet<Store> Store { get; set; }
+        public virtual ICollection<DropDown> DropDowns { get; set; }
+        public virtual ICollection<SalesData> SalesDatas { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning 
                 optionsBuilder.UseSqlServer("Server=DESKTOP-CGQV94K;Database=CRUD;Trusted_Connection=True;");
             }
         }

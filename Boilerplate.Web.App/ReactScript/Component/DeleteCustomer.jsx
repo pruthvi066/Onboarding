@@ -16,17 +16,16 @@ export default class DeleteCustomer extends Component {
             address: this.props.data.address,
             id: this.props.data.id,
 
-            nameError: false,
-
-            addressError: false,
-            formError: false,
-            errorMessage: 'Please complete all required fields.',
-            complete: false,
             modalOpen: false
         };
         this.deletecustomerForm = this.deletecustomerForm.bind(this);
         this.successCallback = this.successCallback.bind(this);
+       
     }
+
+    
+       
+   
 
 
 
@@ -38,59 +37,33 @@ export default class DeleteCustomer extends Component {
         //this.props.hideLoading();
     }
 
-    handleClose = () => this.setState({ modalOpen: false, complete: false }, () => this.props.loadfun(1))
+    handleClose = () => this.setState({ modalOpen: false, complete: false }, () => this.props.loadfun())
     handleOpen = () => this.setState({ modalOpen: true })
 
     deletecustomerForm() {
 
-        let error = false;
-
-        if (this.state.name === '') {
-            this.setState({ nameError: true })
-            error = true
-        } else {
-            this.setState({ nameError: false })
-            error = false
-        }
-        if (this.state.address === '') {
-            this.setState({ addressError: true })
-            error = true
-        } else {
-            this.setState({ addressError: false })
-            error = false
-        }
-
-        if (error) {
-            this.setState({ formError: true })
-            return
-        } else {
-            this.setState({ formError: false })
-        }
-
+      
         let data = {
             Name: this.state.name,
             Address: this.state.address,
             Id: this.state.id,
 
-            //this.props.createCustomer(customer),
-            //this.props.showLoading(),
+          
         }
 
 
-        fetch("http://localhost:61419/Customers/DeleteCustomer", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                
+        $.ajax({
+            url: "http://localhost:61419/Customers/DeleteCustomer",
+            type: "POST",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                this.setState({ data: data })
+                window.location.reload()
+            }.bind(this)
+        });
 
-
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify(data)
-        }).then(res => res.json())
-            .then(function (body) {
-                console.log(body)
-            }).then(() => { this.successCallback(); })
 
     }
 
@@ -124,11 +97,15 @@ export default class DeleteCustomer extends Component {
 
                 {!this.state.complete ?
                     <Modal.Actions>
-                        <Button color='black' onClick={this.handleClose}>cancle</Button>
+                        <Button color='black' onClick={this.handleClose}>cancel</Button>
 
-                        <Button color='red' onClick={this.deletecustomerForm} >
-                            <Icon name='close' />
-                        Delete</Button>
+                        <Button
+                            color="red"
+                            icon="cross"
+                            labelPosition="right"
+                            onClick={() => this.deletecustomerForm()} showDeleteModal={this.showDeleteModal} >
+                            <Icon name="close" />
+                            Delete</Button>
                            
                     </Modal.Actions>
                     : null}

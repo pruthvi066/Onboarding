@@ -14,5 +14,10 @@ namespace Boilerplate.Web.App.Models
         public Customer Customer { get; set; }
         public Product Product { get; set; }
         public Store Store { get; set; }
+
+        internal object ToList()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

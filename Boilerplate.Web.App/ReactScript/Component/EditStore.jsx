@@ -16,12 +16,7 @@ export default class EditStore extends Component {
             address: this.props.data.address,
             id: this.props.data.id,
 
-            nameError: false,
-
-            addressError: false,
-            formError: false,
-            errorMessage: 'Please complete all required fields.',
-            complete: false,
+           
             modalOpen: false
         };
         this.EditstoreForm = this.EditstoreForm.bind(this);
@@ -38,59 +33,34 @@ export default class EditStore extends Component {
         //this.props.hideLoading();
     }
 
-    handleClose = () => this.setState({ modalOpen: false, complete: false }, () => this.props.loadfun(1))
+    handleClose = () => this.setState({ modalOpen: false, complete: false }, () => this.props.loadfun())
     handleOpen = () => this.setState({ modalOpen: true })
 
     EditstoreForm() {
 
-        let error = false;
+       
 
-        if (this.state.name === '') {
-            this.setState({ nameError: true })
-            error = true
-        } else {
-            this.setState({ nameError: false })
-            error = false
-        }
-        if (this.state.address === '') {
-            this.setState({ addressError: true })
-            error = true
-        } else {
-            this.setState({ addressError: false })
-            error = false
-        }
-
-        if (error) {
-            this.setState({ formError: true })
-            return
-        } else {
-            this.setState({ formError: false })
-        }
 
         let data = {
             Name: this.state.name,
             Address: this.state.address,
             Id: this.state.id,
 
-            //this.props.createCustomer(customer),
-            //this.props.showLoading(),
+           
         }
 
 
-        fetch("http://localhost:61419/Stores/EditStore", {
-            method: "PUT",
-            headers: {
-                Accept: "application/json",
-
-
-
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify(data)
-        }).then(res => res.json())
-            .then(function (body) {
-                console.log(body)
-            }).then(() => { this.successCallback(); })
+        $.ajax({
+            url: "http://localhost:61419/Stores/EditStore",
+            type: "PUT",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                this.setState({ data: data })
+                window.location.reload()
+            }.bind(this)
+        });
 
     }
 
@@ -111,14 +81,14 @@ export default class EditStore extends Component {
                 <Modal.Content>
                     {!this.state.complete ?
                         <Modal.Description>
-                            <Form error={this.state.formError}>
+                            <Form>
 
                                 <Form.Field>
-                                    <Form.Input required={true} onChange={(e) => this.setState({ name: e.target.value })} label='Name' placeholder="Enter Name..." error={this.state.nameError} value={this.state.name} />
+                                    <Form.Input required={true} onChange={(e) => this.setState({ name: e.target.value })} label='Name' placeholder="Enter Name..."  value={this.state.name} />
                                 </Form.Field>
 
                                 <Form.Field>
-                                    <Form.Input required={true} onChange={(e) => this.setState({ address: e.target.value })} label='Address' placeholder="Enter Address..." error={this.state.addressError} value={this.state.address} />
+                                    <Form.Input required={true} onChange={(e) => this.setState({ address: e.target.value })} label='Address' placeholder="Enter Address..."  value={this.state.address} />
                                 </Form.Field>
 
                             </Form>
@@ -134,7 +104,7 @@ export default class EditStore extends Component {
 
                 {!this.state.complete ?
                     <Modal.Actions>
-                        <Button color='black' onClick={this.handleClose}>Close</Button>
+                        <Button color='black' onClick={this.handleClose}>Cancle</Button>
                         <Button positive icon='checkmark' labelPosition='right' content="Edit" onClick={this.
                             EditstoreForm} />
                     </Modal.Actions>

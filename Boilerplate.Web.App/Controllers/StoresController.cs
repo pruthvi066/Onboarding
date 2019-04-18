@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Boilerplate.Web.App.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Boilerplate.Web.App.Models;
 using PagedList;
+using System.Linq;
 
 namespace Boilerplate.Web.App.Controllers
 {
@@ -18,46 +13,19 @@ namespace Boilerplate.Web.App.Controllers
         {
             _context = context;
         }
-        public JsonResult GetStore(int page)
+        //index
+        public JsonResult GetStore()
         {
-            var paged = _context.Store.ToList().ToPagedList(page, 10);
-            var pagedWithMetaData = new { items = paged, metaData = paged.GetMetaData() };
-            return Json(pagedWithMetaData);
+            var paged = _context.Store.ToList();
+           
+            return Json(paged);
         }
 
-        // GET: Stores
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Store.ToListAsync());
-        }
+     
+       
 
-        // GET: Stores/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var store = await _context.Store
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (store == null)
-            {
-                return NotFound();
-            }
-
-            return View(store);
-        }
-
-        // GET: Stores/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Stores/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+       //create
         [HttpPost]
         public JsonResult Create([FromBody] Store Store)
 
@@ -73,131 +41,44 @@ namespace Boilerplate.Web.App.Controllers
             return Json(Store);
            
         }
-
+        //edit
         [HttpPut]
         public JsonResult EditStore([FromBody]Store Store)
         {
-            if (!StoreExists(Store.Id))
-            {
-                return Json("Store Id Not Found");
-            }
+            var store = _context.Store.Where(x => x.Id == Store.Id).SingleOrDefault();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    //_context.Update(customer.Name);
-                    _context.Update(Store);
-                    _context.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StoreExists(Store.Id))
-                    {
-                        return Json("Customer Id not exist");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                // return RedirectToAction(nameof(Index));
-            }
+
+
+            store.Name = Store.Name;
+            store.Address = store.Address;
+            _context.SaveChanges();
             return Json(Store);
         }
-        // GET: Stores/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+       
 
-            var store = await _context.Store.FindAsync(id);
-            if (store == null)
-            {
-                return NotFound();
-            }
-            return View(store);
-        }
+      
 
-        // POST: Stores/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address")] Store store)
-        {
-            if (id != store.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(store);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StoreExists(store.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(store);
-        }
-
-        // GET: Stores/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var store = await _context.Store
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (store == null)
-            {
-                return NotFound();
-            }
-
-            return View(store);
-        }
-
+       
+       //delete
         [HttpPost]
 
         public JsonResult DeleteStore(int id, [FromBody]Store Store)
         {
-            if (!StoreExists(Store.Id))
+            var store = _context.Store.Find(Store.Id);
+            _context.Entry(store).Collection(c => c.Sale).Load();
+            if (store.Sale.Count > 0)
             {
-                return Json("Store Id Not Found");
+                foreach (var sales in store.Sale)
+                {
+                    _context.Sale.Remove(sales);
+                }
             }
+            _context.Store.Remove(store);
+            _context.SaveChanges();
 
-            if (ModelState.IsValid)
-            {
-                _context.Store.Remove(Store);
-                _context.SaveChanges();
-
-
-                return new JsonResult("Store Deleted Successfully!");
-
-            }
-            return new JsonResult(Store);
+            return Json("Store Removed Successfully");
         }
 
-        private bool StoreExists(int id)
-        {
-            return _context.Store.Any(e => e.Id == id);
-        }
+       
     }
 }

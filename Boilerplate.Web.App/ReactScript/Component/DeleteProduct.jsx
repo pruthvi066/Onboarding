@@ -16,12 +16,6 @@ export default class DeleteProduct extends Component {
             price: this.props.data.price,
             id: this.props.data.id,
 
-            nameError: false,
-
-            priceError: false,
-            formError: false,
-            errorMessage: 'Please complete all required fields.',
-            complete: false,
             modalOpen: false
         };
         this.deleteproductForm = this.deleteproductForm.bind(this);
@@ -43,54 +37,29 @@ export default class DeleteProduct extends Component {
 
     deleteproductForm() {
 
-        let error = false;
-
-        if (this.state.name === '') {
-            this.setState({ nameError: true })
-            error = true
-        } else {
-            this.setState({ nameError: false })
-            error = false
-        }
-        if (this.state.price === '') {
-            this.setState({ priceError: true })
-            error = true
-        } else {
-            this.setState({ priceError: false })
-            error = false
-        }
-
-        if (error) {
-            this.setState({ formError: true })
-            return
-        } else {
-            this.setState({ formError: false })
-        }
+     
 
         let data = {
             Name: this.state.name,
             price: this.state.price,
-            Id: this.state.id,
+            Id: this.state.id
 
             //this.props.createCustomer(customer),
             //this.props.showLoading(),
         }
 
 
-        fetch("http://localhost:61419/Products/DeleteProduct", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-
-
-
-                'Content-Type': "application/json"
-            },
-            body: JSON.stringify(data)
-        }).then(res => res.json())
-            .then(function (body) {
-                console.log(body)
-            }).then(() => { this.successCallback(); })
+        $.ajax({
+            url: "http://localhost:61419/Products/DeleteProduct",
+            type: "POST",
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (data) {
+                this.setState({ data: data })
+                window.location.reload()
+            }.bind(this)
+        });
 
     }
 
@@ -124,9 +93,12 @@ export default class DeleteProduct extends Component {
 
                 {!this.state.complete ?
                     <Modal.Actions>
-                        <Button color='black' onClick={this.handleClose}>cancle</Button>
+                        <Button color='black' onClick={this.handleClose}>cancel</Button>
 
-                        <Button color='red' onClick={this.deleteproductForm} >
+                        <Button color='red'
+                            icon="close"
+                            labelPosition="right"
+                            onClick={this.deleteproductForm} >
                             <Icon name='close' />
                             Delete</Button>
 
