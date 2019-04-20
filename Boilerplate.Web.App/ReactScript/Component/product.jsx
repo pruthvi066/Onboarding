@@ -24,7 +24,7 @@ export default class Product extends Component {
 
     handleProductEvent = () => {
         $.ajax({
-            url: "/Products/GetProduct",
+            url: "http://localhost:61419/Products/GetProduct",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',

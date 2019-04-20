@@ -20,9 +20,7 @@ namespace Boilerplate.Web.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //var connection = @"Server=DESKTOP-CGQV94K;Database=CRUD;Trusted_Connection=True;ConnectRetryCount=0";
-           
-            var connection = @"Server =pruthvi.database.windows.net;Database=CRUD;Trusted_Connection=False;Encrypt=True;User Id=pru141;Password=lifeline@09;ConnectRetryCount=0";
+            var connection = @"Server=DESKTOP-CGQV94K;Database=CRUD;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<CRUDContext>(options => options.UseSqlServer(connection));
             services.AddMvc();
         }

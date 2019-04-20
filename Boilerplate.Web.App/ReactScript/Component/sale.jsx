@@ -24,7 +24,7 @@ export default class Sale extends Component {
     fetchSales = () => {
       
         $.ajax({
-            url: "/Sales/GetSalesJson",
+            url: "http://localhost:61419/Sales/GetSalesJson",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',

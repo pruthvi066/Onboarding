@@ -25,7 +25,7 @@ export default class store extends Component {
 
     handleStoreEvent = () => {
         $.ajax({
-            url: "/stores/GetStore",
+            url: "http://localhost:61419/stores/GetStore",
             type: "POST",
             contentType: 'applicatio/json',
             dataType: 'json',
