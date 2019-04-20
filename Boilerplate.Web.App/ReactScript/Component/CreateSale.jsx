@@ -56,7 +56,7 @@ export default class CreateSale extends Component {
         };
 
         $.ajax({
-            url: "http://localhost:61419/Sales/Create",
+            url: "/Sales/Create",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',
@@ -70,7 +70,7 @@ export default class CreateSale extends Component {
 
     getSalesDetails = () => {
         $.ajax({
-            url: "http://localhost:61419/Sales/GetDropdoWnJson",
+            url: "/Sales/GetDropdoWnJson",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',

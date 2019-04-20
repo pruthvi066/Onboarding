@@ -61,7 +61,7 @@ export default class CreateCustomer extends Component {
 
 
         $.ajax({
-            url: "http://localhost:61419/Customers/Create",
+            url: "/Customers/Create",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',

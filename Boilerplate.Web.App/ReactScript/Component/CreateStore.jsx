@@ -63,7 +63,7 @@ export default class CreateStore extends Component {
 
 
         $.ajax({
-            url: "http://localhost:61419/Stores/Create",
+            url: "/Stores/Create",
             type: "POST",
             contentType: 'application/json',
             dataType: 'json',

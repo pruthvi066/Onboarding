@@ -53,7 +53,7 @@ export default class EditCustomer extends Component {
         }
 
         $.ajax({
-            url: "http://localhost:61419/Customers/EditCustomer",
+            url: "/Customers/EditCustomer",
             type: "PUT",
             dataType: 'json',
             contentType: 'application/json',

@@ -26,7 +26,7 @@ export default class Customer extends Component {
 
 
         $.ajax({
-            url: "http://localhost:61419/Customers/GetJsonResult",
+            url: "/Customers/GetJsonResult",
             type: "POST",
             contentType: 'application/json',
             dataType: 'json',

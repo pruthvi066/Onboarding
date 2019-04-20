@@ -54,7 +54,7 @@ export default class DeleteStore extends Component {
 
 
         $.ajax({
-            url: "http://localhost:61419/Stores/DeleteStore",
+            url: "/Stores/DeleteStore",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',

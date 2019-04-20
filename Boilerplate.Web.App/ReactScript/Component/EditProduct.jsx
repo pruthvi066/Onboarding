@@ -51,7 +51,7 @@ export default class EditProduct extends Component {
 
 
         $.ajax({
-            url: "http://localhost:61419/Products/EditProduct",
+            url: "/Products/EditProduct",
             type: "PUT",
             dataType: 'json',
             contentType: 'application/json',

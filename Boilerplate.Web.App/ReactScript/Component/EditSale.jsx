@@ -61,7 +61,7 @@ export default class EditSale extends Component {
         }
 
         $.ajax({
-            url: "http://localhost:61419/Sales/EditSale",
+            url: "/Sales/EditSale",
             type: "PUT",
             dataType: 'json',
             contentType: 'application/json',
@@ -76,7 +76,7 @@ export default class EditSale extends Component {
 
     getSalesJson = () => {
         $.ajax({
-            url: "http://localhost:61419/Sales/GetDropdownJson",
+            url: "/Sales/GetDropdownJson",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',

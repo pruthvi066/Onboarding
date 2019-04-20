@@ -60,7 +60,7 @@ export default class DeleteSale extends Component {
             DateSold: this.state.date
         }
         $.ajax({
-            url: "http://localhost:61419/Sales/DeleteSale",
+            url: "/Sales/DeleteSale",
             type: "POST",
             dataType: 'json',
             contentType: 'application/json',
